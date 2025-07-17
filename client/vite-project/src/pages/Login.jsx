@@ -14,6 +14,10 @@ export default function Login() {
     } catch (err) {
       alert('Invalid credentials');
     }
+    localStorage.setItem('token', res.data.token);
+    localStorage.setItem('userEmail', res.data.user.email);  
+    localStorage.setItem('userName', res.data.user.name);    
+
   };
 
   return (
@@ -25,4 +29,3 @@ export default function Login() {
     </form>
   );
 }
-  
