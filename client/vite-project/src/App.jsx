@@ -6,6 +6,7 @@ import Products from './pages/Products';
 import Navbar from './components/Navbar';
 import AdminAddProduct from './pages/AdminAddProduct';
 import Profile from './pages/Profile';
+import Cart from './pages/Cart';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/products' element={<Products />} />
         <Route path="/admin/add-product" element={<AdminAddProduct />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </BrowserRouter>
   );

@@ -5,13 +5,11 @@ import { verifyToken } from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
-// Register a new user
+
 router.post('/register', register);
 
-// Login user
 router.post('/login', login);
 
-// 🔐 Get logged-in user's profile (requires valid token)
 router.get('/profile', verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');

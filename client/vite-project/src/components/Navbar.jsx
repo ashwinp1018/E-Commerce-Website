@@ -11,6 +11,8 @@ export default function Navbar() {
         <Link to="/register">Register</Link>
         <Link to="/admin/add-product">Add Product</Link>
         <Link to="/profile">Profile</Link>
+        <Link to="/cart">Cart</Link>
+
       </div>
     </nav>
   );
