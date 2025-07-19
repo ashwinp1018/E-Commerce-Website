@@ -6,7 +6,7 @@
 
 
 *{
-    font-family: 'Lato', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 @keyframes slideDown {
@@ -46,4 +46,10 @@
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease forwards;
+}
+
+video{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
