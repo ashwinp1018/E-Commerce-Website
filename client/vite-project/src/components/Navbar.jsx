@@ -9,19 +9,26 @@ const Navbar = () => {
   const navLinkClasses = ({ isActive }) =>
     `relative px-3 py-2 text-sm font-medium uppercase tracking-wide transition-all duration-300 ease-in-out
      ${isActive
+       ? "text-black md:text-black font-bold after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-white"
+       : "text-black md:text-black hover:text-gray-300 md:hover:text-gray-300"}`;
+
+  // Mobile specific link classes
+  const mobileLinkClasses = ({ isActive }) =>
+    `relative px-3 py-2 text-sm font-medium uppercase tracking-wide transition-all duration-300 ease-in-out
+     ${isActive
        ? "text-white font-bold after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-white"
        : "text-white hover:text-gray-300"}`;
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-transparent">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-        
+          {/* Logo */}
           <div className="flex items-center">
-            <img src="/Logo-w.png" alt="Logo" className="w-28 h-auto" />
+            <img src="/Logo-b.png" alt="Logo" className="w-28 h-auto" />
           </div>
 
-        
+          {/* Desktop Navigation Links */}
           <div className="hidden md:flex space-x-6">
             <NavLink to="/" className={navLinkClasses}>
               Home
@@ -37,34 +44,34 @@ const Navbar = () => {
             </NavLink>
           </div>
 
-
+          {/* Get Started + Mobile Menu */}
           <div className="flex items-center space-x-4">
-        
+            {/* Get Started Dropdown (Desktop) */}
             <div className="relative hidden md:block">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="px-4 py-2 text-white text-sm font-medium hover:opacity-80 transition"
+                className="px-4 py-2 text-black text-sm font-medium hover:opacity-80 transition"
               >
                 Get Started <ChevronDown className="w-4 h-4 inline-block ml-1" />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 shadow-lg z-50 animate-fadeIn">
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 z-50 animate-fadeIn">
                   <NavLink
                     to="/profile"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="block px-4 py-2 text-black hover:bg-gray-100"
                   >
                     Profile
                   </NavLink>
                   <NavLink
                     to="/login"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="block px-4 py-2 text-black hover:bg-gray-100"
                   >
                     Login
                   </NavLink>
                   <NavLink
                     to="/register"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="block px-4 py-2 text-black hover:bg-gray-100"
                   >
                     Register
                   </NavLink>
@@ -72,8 +79,9 @@ const Navbar = () => {
               )}
             </div>
 
+            {/* Mobile Menu Button */}
             <button
-              className="md:hidden focus:outline-none text-white"
+              className="md:hidden focus:outline-none text-black"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -82,24 +90,24 @@ const Navbar = () => {
         </div>
       </div>
 
- 
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-black bg-opacity-80 shadow-lg animate-slideDown">
+        <div className="md:hidden bg-black bg-opacity-90 shadow-lg animate-slideDown text-white">
           <div className="flex flex-col space-y-2 px-4 py-3">
-            <NavLink to="/" className={navLinkClasses} onClick={() => setMobileMenuOpen(false)}>
+            <NavLink to="/" className={mobileLinkClasses} onClick={() => setMobileMenuOpen(false)}>
               Home
             </NavLink>
-            <NavLink to="/products" className={navLinkClasses} onClick={() => setMobileMenuOpen(false)}>
+            <NavLink to="/products" className={mobileLinkClasses} onClick={() => setMobileMenuOpen(false)}>
               Products
             </NavLink>
-            <NavLink to="/cart" className={navLinkClasses} onClick={() => setMobileMenuOpen(false)}>
+            <NavLink to="/cart" className={mobileLinkClasses} onClick={() => setMobileMenuOpen(false)}>
               Cart
             </NavLink>
-            <NavLink to="/add-product" className={navLinkClasses} onClick={() => setMobileMenuOpen(false)}>
+            <NavLink to="/add-product" className={mobileLinkClasses} onClick={() => setMobileMenuOpen(false)}>
               Add Product
             </NavLink>
 
-          
+            {/* Mobile Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}

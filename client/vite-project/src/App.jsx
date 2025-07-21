@@ -7,10 +7,12 @@ import Navbar from './components/Navbar';
 import AdminAddProduct from './pages/AdminAddProduct';
 import Profile from './pages/Profile';
 import Cart from './pages/Cart';
+import Particles from './components/Particles';
 
 function App() {
   return (
     <BrowserRouter>
+    <Particles id="particles" />
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
