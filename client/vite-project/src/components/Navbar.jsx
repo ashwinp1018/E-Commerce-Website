@@ -105,7 +105,7 @@ const Navbar = () => {
             <NavLink to="/add-product" className={mobileLinkClasses} onClick={() => setMobileMenuOpen(false)}>
               Add Product
             </NavLink>
-
+ 
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}

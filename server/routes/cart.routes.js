@@ -37,6 +37,30 @@ router.post('/add', authenticate, async (req, res) => {
   }
 });
 
+router.put('/update', authenticate, async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+
+    if (!productId || quantity < 1) {
+      return res.status(400).json({ error: 'Invalid productId or quantity' });
+    }
+
+    const cart = await Cart.findOne({ user: req.user._id });
+    if (!cart) return res.status(404).json({ error: 'Cart not found' });
+
+    const item = cart.products.find(item => item.product.toString() === productId);
+    if (!item) return res.status(404).json({ error: 'Product not found in cart' });
+
+    item.quantity = quantity;
+    await cart.save();
+
+    res.json(cart);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update cart quantity' });
+  }
+});
+
 router.delete('/remove/:productId', authenticate, async (req, res) => {
   try {
     const { productId } = req.params;
@@ -54,6 +78,5 @@ router.delete('/remove/:productId', authenticate, async (req, res) => {
     res.status(500).json({ error: 'Failed to remove item from cart' });
   }
 });
-
 
 export default router;
