@@ -67,65 +67,76 @@ const AdminAddProduct = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <div className="max-w-2xl mx-auto p-6 mt-24 border border-black bg-white shadow-lg">
-      <h1 className="text-3xl font-bold text-center text-black mb-6 border-b border-black pb-3">
+    <div className="max-w-5xl mx-auto p-6 mt-24 border border-black bg-white shadow-lg">
+      <h1 className="text-3xl font-bold text-center text-black mb-8 border-b border-black pb-3">
         Add New Product
       </h1>
 
-      {/* Image Preview */}
-      {form.image && (
-        <div className="mb-4 flex justify-center">
-          <img
-            src={form.image}
-            alt="Preview"
-            className="w-40 h-40 object-cover border border-black shadow-md"
-          />
-        </div>
-      )}
-
-      {/* Dropzone */}
-      <div
-        {...getRootProps()}
-        className={`mb-4 border-2 border-dashed p-6 text-center cursor-pointer transition ${
-          isDragActive ? 'border-black bg-gray-100' : 'border-gray-400'
-        }`}
-      >
-        <input {...getInputProps()} />
-        {uploading ? (
-          <p className="text-gray-600">Uploading...</p>
-        ) : (
-          <p className="text-gray-600">
-            Drag & drop an image here, or click to select
-          </p>
-        )}
-      </div>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {['name', 'description', 'price', 'category', 'stock'].map((field) => (
-          <div key={field} className="flex flex-col">
-            <label htmlFor={field} className="mb-1 font-semibold text-black capitalize">
-              {field}
-            </label>
-            <input
-              id={field}
-              name={field}
-              type={field === 'price' || field === 'stock' ? 'number' : 'text'}
-              placeholder={`Enter ${field}`}
-              value={form[field]}
-              onChange={handleChange}
-              className="border border-black px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black transition"
-            />
-          </div>
-        ))}
-
-        <button
-          type="submit"
-          className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-800 transition"
+      {/* Landscape Layout */}
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Left: Product Details */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 space-y-4 border border-black p-4"
         >
-          Add Product
-        </button>
-      </form>
+          {['name', 'description', 'price', 'category', 'stock'].map((field) => (
+            <div key={field} className="flex flex-col">
+              <label
+                htmlFor={field}
+                className="mb-1 font-semibold text-black capitalize"
+              >
+                {field}
+              </label>
+              <input
+                id={field}
+                name={field}
+                type={field === 'price' || field === 'stock' ? 'number' : 'text'}
+                placeholder={`Enter ${field}`}
+                value={form[field]}
+                onChange={handleChange}
+                className="border border-black px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black transition"
+              />
+            </div>
+          ))}
+
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-800 transition"
+          >
+            Add Product
+          </button>
+        </form>
+
+        {/* Right: Image Upload */}
+        <div className="flex-1 border border-black p-4 flex flex-col items-center justify-center">
+          <h2 className="text-lg font-semibold mb-4">Upload Product Image</h2>
+          {form.image && (
+            <div className="mb-4 w-full flex justify-center">
+              <img
+                src={form.image}
+                alt="Preview"
+                className="w-48 h-48 object-cover border border-black shadow-md"
+              />
+            </div>
+          )}
+
+          <div
+            {...getRootProps()}
+            className={`w-full border-2 border-dashed p-6 text-center cursor-pointer transition ${
+              isDragActive ? 'border-black bg-gray-100' : 'border-gray-400'
+            }`}
+          >
+            <input {...getInputProps()} />
+            {uploading ? (
+              <p className="text-gray-600">Uploading...</p>
+            ) : (
+              <p className="text-gray-600">
+                Drag & drop an image here, or click to select
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
