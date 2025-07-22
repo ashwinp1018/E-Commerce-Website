@@ -71,8 +71,8 @@ const Profile = () => {
 
   if (!localStorage.getItem('token')) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 text-center px-4">
-        <h2 className="text-2xl font-bold text-black mb-4">
+      <div className="flex flex-col justify-center items-center min-h-screen  text-center px-4">
+        <h2 className="text-2xl font-bold text-black mb-4 bg-white">
           ❌ Login to view profile
         </h2>
         <div className="flex gap-4">
@@ -100,7 +100,7 @@ const Profile = () => {
     `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}&backgroundType=gradient`;
 
   return (
-      <div className="flex justify-center items-center min-h-screen px-4">
+      <div className="flex justify-center items-center min-h-screen px-4 pt-20">
     <div className="max-w-6xl w-full flex flex-col md:flex-row border border-black bg-white shadow">
         {/* Sidebar */}
         <aside className="w-full md:w-64 border-r border-black p-6 flex flex-col items-center text-center md:text-left">

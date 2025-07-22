@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import API from '../api/axios';
 import toast from 'react-hot-toast';
@@ -13,6 +14,14 @@ const AdminAddProduct = () => {
     stock: '',
   });
   const [uploading, setUploading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  // Check login status
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,8 +29,12 @@ const AdminAddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      toast.error('❌ You must be logged in to add a product!');
+      return;
+    }
+
     try {
-      // Attach the JWT token from localStorage
       await API.post('/products', form, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -45,6 +58,11 @@ const AdminAddProduct = () => {
 
   // Upload to Cloudinary
   const uploadImageToCloudinary = async (file) => {
+    if (!isLoggedIn) {
+      toast.error('❌ You must be logged in to upload an image!');
+      return;
+    }
+
     const data = new FormData();
     data.append('file', file);
 
@@ -74,6 +92,31 @@ const AdminAddProduct = () => {
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  // Show login message if not logged in
+  if (!isLoggedIn) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen px-4">
+        <h2 className="text-2xl font-bold text-black mb-4 bg-white">
+          ❌ You must be logged in to add a product.
+        </h2>
+        <div className="flex gap-4">
+          <button
+            onClick={() => navigate('/login')}
+            className="px-6 py-2 bg-black text-white hover:bg-gray-800 transition"
+          >
+            Login
+          </button>
+          <button
+            onClick={() => navigate('/register')}
+            className="px-6 py-2 border border-black hover:bg-gray-100 transition"
+          >
+            Register
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto p-6 mt-24 border border-black bg-white shadow-lg">

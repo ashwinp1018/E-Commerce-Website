@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
+     
     <BrowserRouter>
       {/* Video Background */}
       <div className="fixed inset-0 -z-10">
@@ -51,6 +52,7 @@ function App() {
         }}
       />
     </BrowserRouter>
+   
   );
 }
 
