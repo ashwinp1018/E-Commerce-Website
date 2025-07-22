@@ -7,6 +7,11 @@ const productSchema = new mongoose.Schema({
   image: String,
   category: String,
   stock: Number,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',  // References the User model
+    required: true,
+  },
 });
 
 const Product = mongoose.model('Product', productSchema);

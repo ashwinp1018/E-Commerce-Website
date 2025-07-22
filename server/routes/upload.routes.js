@@ -1,38 +1,48 @@
-import express from 'express';
-import { v2 as cloudinary } from 'cloudinary';
-import multer from 'multer';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import dotenv from 'dotenv';
+import express from "express";
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
 
 dotenv.config();
-
 const router = express.Router();
 
-// Configure Cloudinary
+// Cloudinary Config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Configure storage
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: 'products', // Folder name in Cloudinary
-    allowed_formats: ['jpg', 'jpeg', 'png'],
-  },
-});
-
+// Multer setup (storing file in memory)
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Upload route
-router.post('/upload', upload.single('file'), (req, res) => {
+// Upload Endpoint
+router.post("/", upload.single("file"), async (req, res) => {
   try {
-    return res.json({ url: req.file.path });
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    console.log("File received:", req.file.originalname);
+
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload_stream(
+      { folder: "ecommerce-products" },
+      (error, uploadResult) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          return res.status(500).json({ error: "Cloudinary upload failed" });
+        }
+        return res.json({ url: uploadResult.secure_url });
+      }
+    );
+
+    // Pipe the buffer to Cloudinary
+    result.end(req.file.buffer);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Image upload failed' });
+    console.error("Upload route error:", err);
+    res.status(500).json({ error: "Image upload failed", details: err.message });
   }
 });
 

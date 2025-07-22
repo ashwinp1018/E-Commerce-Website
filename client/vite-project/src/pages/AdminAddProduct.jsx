@@ -21,7 +21,13 @@ const AdminAddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post('/products', form);
+      // Attach the JWT token from localStorage
+      await API.post('/products', form, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
       toast.success('✅ Product added successfully');
       setForm({
         name: '',
@@ -45,7 +51,10 @@ const AdminAddProduct = () => {
     setUploading(true);
     try {
       const res = await API.post('/upload', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
       setForm((prev) => ({ ...prev, image: res.data.url }));
       toast.success('✅ Image uploaded successfully');

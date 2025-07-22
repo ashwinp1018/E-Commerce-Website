@@ -7,15 +7,21 @@ import Navbar from './components/Navbar';
 import AdminAddProduct from './pages/AdminAddProduct';
 import Profile from './pages/Profile';
 import Cart from './pages/Cart';
-import Particles from './components/Particles';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <BrowserRouter>
-      {/* Particles Background */}
+      {/* Video Background */}
       <div className="fixed inset-0 -z-10">
-        <Particles id="particles" />
+        <video
+          src="/video-bg.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none bg-black/40"
+        ></video>
       </div>
 
       {/* Navbar */}
