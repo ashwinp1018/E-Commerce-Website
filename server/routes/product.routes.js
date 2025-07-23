@@ -35,11 +35,19 @@ router.get('/', async (req, res) => {
 // Add product (requires login)
 router.post('/', verifyToken, async (req, res) => {
   try {
-    console.log('Request body:', req.body); // Debug
+    // Fetch the logged-in user's details
+    const user = await User.findById(req.user.id);
+
+    // Restrict product addition to only the specific email
+    if (!user || user.email !== 'ashwinparashar1018@gmail.com') {
+      return res.status(403).json({ error: 'You are not allowed to add products.' });
+    }
+
     const product = new Product({
       ...req.body,
-      user: req.user.id, // Store the user ID who uploaded
+      user: req.user.id, // Save which user added the product
     });
+
     await product.save();
     res.status(201).json(product);
   } catch (err) {

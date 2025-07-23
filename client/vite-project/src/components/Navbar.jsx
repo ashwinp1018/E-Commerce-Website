@@ -102,7 +102,7 @@ const Navbar = () => {
             <NavLink to="/cart" className={mobileLinkClasses} onClick={() => setMobileMenuOpen(false)}>
               Cart
             </NavLink>
-            <NavLink to="/add-product" className={mobileLinkClasses} onClick={() => setMobileMenuOpen(false)}>
+            <NavLink to="/admin/add-product" className={mobileLinkClasses} onClick={() => setMobileMenuOpen(false)}>
               Add Product
             </NavLink>
  

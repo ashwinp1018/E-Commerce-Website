@@ -14,14 +14,33 @@ const AdminAddProduct = () => {
     stock: '',
   });
   const [uploading, setUploading] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const navigate = useNavigate();
 
-  // Redirect if user is not logged in
+  // Check authorization
   useEffect(() => {
-    if (!localStorage.getItem('token')) {
+    const token = localStorage.getItem('token');
+    if (!token) {
       toast.error('You must be logged in to access this page.');
       navigate('/login');
+      return;
     }
+
+    // Fetch profile to check email
+    API.get('/auth/profile', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (res.data.email === 'ashwinparashar1018@gmail.com') {
+          setIsAuthorized(true);
+        } else {
+          toast.error('You are not authorized to add products.');
+        }
+      })
+      .catch(() => {
+        toast.error('Failed to verify user.');
+        navigate('/login');
+      });
   }, [navigate]);
 
   const handleChange = (e) => {
@@ -30,7 +49,6 @@ const AdminAddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (form.images.length === 0) {
       toast.error('Please upload at least one image.');
       return;
@@ -38,7 +56,9 @@ const AdminAddProduct = () => {
 
     try {
       await API.post('/products', form, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
 
       toast.success('✅ Product added successfully');
@@ -74,7 +94,7 @@ const AdminAddProduct = () => {
       }));
       toast.success('✅ Image uploaded successfully');
     } catch (err) {
-      console.error('Upload error:', err.response?.data || err.message);
+      console.error(err);
       toast.error('❌ Image upload failed');
     } finally {
       setUploading(false);
@@ -92,21 +112,23 @@ const AdminAddProduct = () => {
     multiple: true,
   });
 
-  // Remove image from preview
-  const removeImage = (index) => {
-    setForm((prev) => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
-    toast('Image removed');
-  };
+  if (!isAuthorized) {
+    return (
+      <div className="max-w-xl mx-auto p-8 mt-24 text-center border border-black bg-white shadow-lg">
+        <h1 className="text-2xl font-bold text-black mb-4">
+          You are not authorized to add products.
+        </h1>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 mt-24 border border-black bg-white shadow-lg rounded-md min-h-screen">
+    <div className="max-w-5xl mx-auto p-6 mt-24 border border-black bg-white shadow-lg">
       <h1 className="text-3xl font-bold text-center text-black mb-8 border-b border-black pb-3">
         Add New Product
       </h1>
 
+      {/* Layout */}
       <div className="flex flex-col md:flex-row gap-8">
         {/* Product Details */}
         <form onSubmit={handleSubmit} className="flex-1 space-y-4 border border-black p-4">
@@ -138,25 +160,17 @@ const AdminAddProduct = () => {
         </form>
 
         {/* Image Upload */}
-        <div className="flex-1 border border-black p-4 flex flex-col items-center justify-start">
+        <div className="flex-1 border border-black p-4 flex flex-col items-center justify-center">
           <h2 className="text-lg font-semibold mb-4">Upload Product Images</h2>
           {form.images.length > 0 && (
-            <div className="mb-4 w-full grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="mb-4 w-full grid grid-cols-2 gap-2">
               {form.images.map((img, idx) => (
-                <div key={idx} className="relative">
-                  <img
-                    src={img}
-                    alt={`Preview ${idx + 1}`}
-                    className="w-full h-32 object-cover border border-black shadow-md"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(idx)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs hover:bg-red-600"
-                  >
-                    ✕
-                  </button>
-                </div>
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`Preview ${idx + 1}`}
+                  className="w-full h-32 object-cover border border-black shadow-md"
+                />
               ))}
             </div>
           )}

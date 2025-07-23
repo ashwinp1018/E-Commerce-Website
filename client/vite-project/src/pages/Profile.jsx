@@ -174,11 +174,6 @@ const Profile = () => {
             <p className="font-medium">{user.email}</p>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-semibold mb-2">Products Added</label>
-            <p className="font-medium">{user.products?.length || 0}</p>
-          </div>
-
           {isEditing ? (
             <div className="space-x-4">
               <button
