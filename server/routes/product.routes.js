@@ -1,14 +1,30 @@
 import express from 'express';
 import Product from '../models/Product.js';
-import User from '../models/User.js';
 import { verifyToken } from '../middleware/verifyToken.js';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// Fetch all products with user details
+// Get products - logged-in users won't see their own products
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find().populate('user', 'name email');
+    let userId = null;
+
+    // Check if token is provided (user logged in)
+    if (req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.id;
+      } catch (err) {
+        console.warn('Invalid or missing token. Returning all products.');
+      }
+    }
+
+    // Filter out user's own products if logged in
+    const query = userId ? { user: { $ne: userId } } : {};
+    const products = await Product.find(query);
+
     res.json(products);
   } catch (err) {
     console.error('Fetch error:', err);
@@ -16,23 +32,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Create a product linked to the logged-in user
+// Add product (requires login)
 router.post('/', verifyToken, async (req, res) => {
   try {
-    console.log('Request body:', req.body);
-
+    console.log('Request body:', req.body); // Debug
     const product = new Product({
       ...req.body,
-      user: req.user.id, // Attach logged-in user ID
+      user: req.user.id, // Store the user ID who uploaded
     });
-
     await product.save();
-
-    // Push product ID to the user's products array
-    await User.findByIdAndUpdate(req.user.id, {
-      $push: { products: product._id },
-    });
-
     res.status(201).json(product);
   } catch (err) {
     console.error('Create error:', err);

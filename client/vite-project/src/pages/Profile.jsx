@@ -135,10 +135,10 @@ const Profile = () => {
               Orders
             </NavLink>
             <NavLink
-              to="/wishlist"
+              to="/cart"
               className="block border border-black px-4 py-2 hover:bg-black hover:text-white transition"
             >
-              Wishlist
+              Cart
             </NavLink>
             <button
               onClick={handleLogout}
@@ -203,31 +203,8 @@ const Profile = () => {
             </button>
           )}
 
-          {/* User Products Section */}
-          <div className="mt-10">
-            <h2 className="text-xl font-bold mb-4">Your Products</h2>
-            {user.products && user.products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {user.products.map((product) => (
-                  <div
-                    key={product._id}
-                    className="border border-black p-4 shadow hover:shadow-lg transition"
-                  >
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-40 object-cover border border-black mb-2"
-                    />
-                    <h3 className="font-semibold">{product.name}</h3>
-                    <p className="text-sm text-gray-700">{product.category}</p>
-                    <p className="font-bold">₹{product.price}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-600">You have not added any products yet.</p>
-            )}
-          </div>
+        
+        
         </main>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
+import { useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -9,19 +9,20 @@ const AdminAddProduct = () => {
     name: '',
     description: '',
     price: '',
-    image: '',
+    images: [],
     category: '',
     stock: '',
   });
   const [uploading, setUploading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
-  // Check login status
+  // Redirect if user is not logged in
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
-  }, []);
+    if (!localStorage.getItem('token')) {
+      toast.error('You must be logged in to access this page.');
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,16 +30,15 @@ const AdminAddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isLoggedIn) {
-      toast.error('❌ You must be logged in to add a product!');
+
+    if (form.images.length === 0) {
+      toast.error('Please upload at least one image.');
       return;
     }
 
     try {
       await API.post('/products', form, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
       toast.success('✅ Product added successfully');
@@ -46,23 +46,17 @@ const AdminAddProduct = () => {
         name: '',
         description: '',
         price: '',
-        image: '',
+        images: [],
         category: '',
         stock: '',
       });
     } catch (err) {
-      console.error(err);
+      console.error('Error while submitting product:', err);
       toast.error('❌ Failed to add product');
     }
   };
 
-  // Upload to Cloudinary
   const uploadImageToCloudinary = async (file) => {
-    if (!isLoggedIn) {
-      toast.error('❌ You must be logged in to upload an image!');
-      return;
-    }
-
     const data = new FormData();
     data.append('file', file);
 
@@ -74,63 +68,48 @@ const AdminAddProduct = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      setForm((prev) => ({ ...prev, image: res.data.url }));
+      setForm((prev) => ({
+        ...prev,
+        images: [...prev.images, res.data.url],
+      }));
       toast.success('✅ Image uploaded successfully');
     } catch (err) {
-      console.error(err);
+      console.error('Upload error:', err.response?.data || err.message);
       toast.error('❌ Image upload failed');
     } finally {
       setUploading(false);
     }
   };
 
-  // Dropzone
   const onDrop = useCallback((acceptedFiles) => {
-    if (acceptedFiles && acceptedFiles[0]) {
-      uploadImageToCloudinary(acceptedFiles[0]);
+    if (acceptedFiles && acceptedFiles.length > 0) {
+      acceptedFiles.forEach((file) => uploadImageToCloudinary(file));
     }
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: true,
+  });
 
-  // Show login message if not logged in
-  if (!isLoggedIn) {
-    return (
-      <div className="flex flex-col justify-center items-center min-h-screen px-4">
-        <h2 className="text-2xl font-bold text-black mb-4 bg-white">
-          ❌ You must be logged in to add a product.
-        </h2>
-        <div className="flex gap-4">
-          <button
-            onClick={() => navigate('/login')}
-            className="px-6 py-2 bg-black text-white hover:bg-gray-800 transition"
-          >
-            Login
-          </button>
-          <button
-            onClick={() => navigate('/register')}
-            className="px-6 py-2 border border-black hover:bg-gray-100 transition"
-          >
-            Register
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Remove image from preview
+  const removeImage = (index) => {
+    setForm((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+    toast('Image removed');
+  };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 mt-24 border border-black bg-white shadow-lg">
+    <div className="max-w-5xl mx-auto p-6 mt-24 border border-black bg-white shadow-lg rounded-md min-h-screen">
       <h1 className="text-3xl font-bold text-center text-black mb-8 border-b border-black pb-3">
         Add New Product
       </h1>
 
-      {/* Landscape Layout */}
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Left: Product Details */}
-        <form
-          onSubmit={handleSubmit}
-          className="flex-1 space-y-4 border border-black p-4"
-        >
+        {/* Product Details */}
+        <form onSubmit={handleSubmit} className="flex-1 space-y-4 border border-black p-4">
           {['name', 'description', 'price', 'category', 'stock'].map((field) => (
             <div key={field} className="flex flex-col">
               <label
@@ -150,7 +129,6 @@ const AdminAddProduct = () => {
               />
             </div>
           ))}
-
           <button
             type="submit"
             className="w-full bg-black text-white py-3 font-semibold hover:bg-gray-800 transition"
@@ -159,19 +137,29 @@ const AdminAddProduct = () => {
           </button>
         </form>
 
-        {/* Right: Image Upload */}
-        <div className="flex-1 border border-black p-4 flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold mb-4">Upload Product Image</h2>
-          {form.image && (
-            <div className="mb-4 w-full flex justify-center">
-              <img
-                src={form.image}
-                alt="Preview"
-                className="w-48 h-48 object-cover border border-black shadow-md"
-              />
+        {/* Image Upload */}
+        <div className="flex-1 border border-black p-4 flex flex-col items-center justify-start">
+          <h2 className="text-lg font-semibold mb-4">Upload Product Images</h2>
+          {form.images.length > 0 && (
+            <div className="mb-4 w-full grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {form.images.map((img, idx) => (
+                <div key={idx} className="relative">
+                  <img
+                    src={img}
+                    alt={`Preview ${idx + 1}`}
+                    className="w-full h-32 object-cover border border-black shadow-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(idx)}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs hover:bg-red-600"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
             </div>
           )}
-
           <div
             {...getRootProps()}
             className={`w-full border-2 border-dashed p-6 text-center cursor-pointer transition ${
@@ -183,7 +171,7 @@ const AdminAddProduct = () => {
               <p className="text-gray-600">Uploading...</p>
             ) : (
               <p className="text-gray-600">
-                Drag & drop an image here, or click to select
+                Drag & drop images here, or click to select
               </p>
             )}
           </div>

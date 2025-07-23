@@ -12,7 +12,7 @@ const Products = () => {
   }, []);
 
   return (
-    <div className="p-4 max-w-7xl mx-auto">
+    <div className="p-4 max-w-7xl mx-auto pt-10">
       <h1 className="text-2xl font-bold mb-4">Our Products</h1>
       {products.length === 0 ? (
         <p>No products available.</p>

@@ -42,7 +42,7 @@ export default function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen  px-4">
+    <div className="flex justify-center items-center min-h-screen pt-10  px-4">
       <div className="w-full max-w-lg bg-white border border-black shadow-lg p-8">
         <h2 className="text-3xl font-extrabold text-center mb-6 text-black border-b border-black pb-2">
           Create Account
