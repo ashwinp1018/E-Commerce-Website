@@ -1,4 +1,5 @@
 MooN Thrifts - E-commerce Website
+
 MooN Thrifts is a full-stack e-commerce platform built with the MERN stack (MongoDB, Express.js, React.js, Node.js). The website allows users to browse products, add them to the cart, and place orders. Only an admin (with a specific email) can add new products. The UI has a modern black-and-white aesthetic with responsive layouts and animations.
 🚀 Features
 Frontend (React + Tailwind CSS)
