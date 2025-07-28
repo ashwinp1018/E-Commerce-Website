@@ -12,7 +12,26 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Correct CORS Configuration
+const allowedOrigins = [
+  'http://localhost:5173', // Local development
+  'https://e-commerce-website-pi-orpin.vercel.app' // Vercel frontend
+];
 
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed for this origin"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+<<<<<<< HEAD
 const allowedOrigins = [
   'http://localhost:5173', // Local development
   'https://e-commerce-website-pi-orpin.vercel.app' // Vercel frontend
@@ -34,6 +53,11 @@ app.use(
 app.use(express.json());
 
 
+=======
+app.use(express.json());
+
+// API Routes
+>>>>>>> ec6767e ( Minor Fixes)
 app.use('/api/cart', cartRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/auth', authRoutes);
@@ -41,7 +65,11 @@ app.use('/api/products', productRoutes);
 
 app.get('/', (req, res) => res.send('API Running'));
 
+<<<<<<< HEAD
 
+=======
+// MongoDB Connection
+>>>>>>> ec6767e ( Minor Fixes)
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

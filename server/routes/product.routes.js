@@ -7,8 +7,8 @@ const router = express.Router();
 
 // Get products - logged-in users won't see their own products
 router.get('/', async (req, res) => {
-  try {
-    let userId = null;
+  try { 
+   let userId = null;
 
     // Check if token is provided (user logged in)
     if (req.headers.authorization) {

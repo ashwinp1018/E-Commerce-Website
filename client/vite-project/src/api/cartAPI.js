@@ -1,6 +1,6 @@
 import API from './axios';
 
-// Fetch cart
+
 export const getCart = () => {
   console.log('Fetching cart...');
   return API.get('/cart', {
@@ -8,7 +8,6 @@ export const getCart = () => {
   });
 };
 
-// Add product to cart
 export const addToCart = (productId, quantity = 1) => {
   console.log(`Adding product ${productId} with quantity ${quantity} to cart...`);
   return API.post(
@@ -18,7 +17,7 @@ export const addToCart = (productId, quantity = 1) => {
   );
 };
 
-// Update product quantity in cart
+
 export const updateCart = (productId, quantity) => {
   if (!productId || quantity < 1) {
     console.error('Invalid productId or quantity for updateCart:', productId, quantity);
@@ -33,7 +32,6 @@ export const updateCart = (productId, quantity) => {
   );
 };
 
-// Remove product from cart
 export const removeFromCart = (productId) => {
   console.log(`Removing product ${productId} from cart...`);
   return API.delete(`/cart/remove/${productId}`, {

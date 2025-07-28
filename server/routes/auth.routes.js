@@ -8,12 +8,12 @@ const router = express.Router();
 router.post('/register', register);
 router.post('/login', login);
 
-// Get Profile
+
 router.get('/profile', verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
       .select('-password')
-      .populate('products'); // Fetch full product details
+      .populate('products');
 
     if (!user) return res.status(404).json({ error: 'User not found' });
 
@@ -24,8 +24,6 @@ router.get('/profile', verifyToken, async (req, res) => {
   }
 });
 
-
-// Update Profile
 router.put('/profile', verifyToken, async (req, res) => {
   try {
     const { name, profileImage } = req.body;
@@ -36,7 +34,7 @@ router.put('/profile', verifyToken, async (req, res) => {
       { new: true, runValidators: true, select: '-password' }
     );
 
-    if (!updatedUser) return res.status(404).json({ error: 'User not found' });
+    if (!updatedUser) return res.status(404).json({ error:'User not found'});
 
     res.json(updatedUser);
   } catch (err) {
