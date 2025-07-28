@@ -15,7 +15,8 @@ const PORT = process.env.PORT || 5000;
 // Correct CORS Configuration
 const allowedOrigins = [
   'http://localhost:5173', // Local development
-  'https://e-commerce-website-pi-orpin.vercel.app' // Vercel frontend
+  'https://e-commerce-website-pi-orpin.vercel.app', // Old Vercel frontend
+  'https://e-commerce-website-bppe.vercel.app' // New Vercel frontend
 ];
 
 app.use(
@@ -30,6 +31,7 @@ app.use(
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 
